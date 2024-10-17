@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Create Order{% endblock %}
+{% block content %}
+<div class="container my-5 p-4 bg-light shadow-sm border rounded">
+    <h2 class="text-center mb-4">Create a New Order</h2>
+
+    <form id="order-form" method="post">
+        {% csrf_token %}
+
+        <!-- Seller and Description Fields -->
+        <div class="mb-3">
+            <label for="seller" class="form-label">{{ order_form.seller.label }}</label>
+            {{ order_form.seller }}
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">{{ order_form.description.label }}</label>
+            {{ order_form.description }}
+        </div>
+
+        <!-- Order Items Section -->
+        <div id="order-items">
+            <h4 class="mb-3">Order Items</h4>
+
+            {{ formset.management_form }}
+
+            {% for form in formset %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Order Item {{ forloop.counter }}</h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ form.name.label }}</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ form.brand.label }}</label>
+                            {{ form.brand }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ form.size.label }}</label>
+                            {{ form.size }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ form.quantity.label }}</label>
+                            {{ form.quantity }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.color.label }}</label>
+                        {{ form.color }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Button to add more order items -->
+        <button type="button" class="btn btn-outline-primary mb-3" id="add-item">Add Item</button>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success w-100">Submit Order</button>
+    </form>
+</div>
+
+<!-- JavaScript to add new order items dynamically -->
+<script>
+    document.getElementById('add-item').addEventListener('click', function () {
+        const orderItemsDiv = document.getElementById('order-items');
+        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+        const formNum = totalForms.value;
+
+        // Clone the last order item form
+        const newForm = document.querySelector('.card').cloneNode(true);
+
+        // Update form fields' names and IDs
+        newForm.innerHTML = newForm.innerHTML.replace(/form-(\d)-/g, `form-${formNum}-`);
+
+        // Append the new form to the order items container
+        orderItemsDiv.appendChild(newForm);
+
+        // Increment the number of total forms
+        totalForms.value = parseInt(formNum) + 1;
+    });
+</script>
+{% endblock %}

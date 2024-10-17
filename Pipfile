@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+djangorestframework = "*"
+django = "*"
+crispy-bootstrap5 = "*"
+django-crispy-forms = "*"
+requests = "*"
+pyjwt = "*"
+cryptography = "*"
+python-decouple = "*"
+django-allauth = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

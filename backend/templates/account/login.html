@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load allauth account %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+
+{% block title %}Sign In{% endblock%}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">{% trans "Sign In" %}</h1>
+
+    {% if not SOCIALACCOUNT_ONLY %}
+    <p class="text-center">
+        {% blocktranslate %}
+        If you don't have an account, please <a href="{{ signup_url }}">sign up</a> first.
+        {% endblocktranslate %}
+    </p>
+
+    {% url 'account_login' as login_url %}
+
+    <!-- Sign in form with Bootstrap styling -->
+    <form method="post" action="{{ login_url }}" class="w-50 mx-auto needs-validation" novalidate>
+        {% csrf_token %}
+        {{ form|crispy }}
+        {{ redirect_field }}
+
+        <!-- Show password toggle -->
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="showPassword">
+            <label class="form-check-label" for="showPassword">{% trans "Show Password" %}</label>
+        </div>
+
+        <!-- Sign In Button -->
+        <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">
+                {% trans "Sign In" %}
+            </button>
+        </div>
+    </form>
+    {% endif %}
+
+    <!-- Divider and Social Login Options -->
+    <hr class="my-4">
+    <div class="text-center">
+        <h5 class="mb-3">{% trans "Or Sign In With" %}</h5>
+
+        <!-- Social login buttons styled using Bootstrap -->
+        <div class="social-login d-flex justify-content-center gap-2">
+            <a href="{% url 'google_login' %}" class="btn btn-outline-primary d-flex align-items-center">
+                <img src="{% static 'images/icons/google.png' %}" width="20" height="20" class="me-2">
+                Google
+            </a>
+
+            <a href="{% provider_login_url 'github' %}" class="btn btn-outline-dark d-flex align-items-center">
+                <img src="{% static 'images/icons/github.png' %}" width="20" height="20" class="me-2">
+                GitHub
+            </a>
+        </div>
+    </div>
+
+    <!-- Optional passkey and code login options -->
+    {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+    <div class="mt-4 text-center">
+        {% if PASSKEY_LOGIN_ENABLED %}
+        <button type="button" class="btn btn-outline-primary mb-2" id="passkey_login">
+            {% trans "Sign in with a passkey" %}
+        </button>
+        {% endif %}
+        {% if LOGIN_BY_CODE_ENABLED %}
+        <a href="{{ request_login_code_url }}" class="btn btn-outline-secondary">
+            {% trans "Mail me a sign-in code" %}
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock content %}
