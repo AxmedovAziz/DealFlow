@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %} Order Detail {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">Order Details for {{ order.seller }}</h2>
+    <p><strong>Description:</strong> {{ order.description }}</p>
+    <p><strong>Created at:</strong> {{ order.created }}</p>
+
+    <h3>Order Items</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Brand</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                    <th>Color</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.orders.all %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.brand }}</td>
+                    <td>{{ item.size }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.color }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No items found for this order.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h4>Order Status:</h4>
+    <p>
+        {% if order.orderconfirmation %}
+        {% if order.orderconfirmation.completed %}
+        <strong>Confirmed at:</strong> {{ order.orderconfirmation.confirmed_at }}<br>
+        <strong>Completed at:</strong> {{ order.orderconfirmation.completed_at }}<br>
+        <strong>Time Taken to Complete:</strong> {{ order.orderconfirmation.time_to_complete }}<br>
+        <strong>Price:</strong> {{ order.orderconfirmation.price }}
+        {% else %}
+        Confirmed at {{ order.orderconfirmation.confirmed_at }} by {{ order.orderconfirmation.confirmed_by }}<br>
+    <form method="POST" action="{% url 'set_price' order.id %}" class="mt-2">
+        {% csrf_token %}
+        <div class="mb-2">
+            <label for="price">Set Price:</label>
+            <input type="number" name="price" id="price" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-info">Submit Price</button>
+    </form>
+    {% endif %}
+    {% else %}
+    <span class="text-danger">Not Confirmed</span>
+    {% endif %}
+    </p>
+
+    <!-- Order confirmation/completion buttons -->
+    <div class="mt-4">
+        {% if not order.orderconfirmation %}
+        <form method="POST" action="{% url 'confirm_order' order.id %}" class="mb-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Confirm Order</button>
+        </form>
+        {% elif not order.orderconfirmation.completed %}
+        <form method="POST" action="{% url 'complete_order' order.id %}" class="mb-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Complete Order</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'home' %}" class="btn btn-secondary mt-4">Back to Orders</a>
+</div>
+{% endblock %}

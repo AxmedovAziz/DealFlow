@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %} Completed Orders {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Completed Orders</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>User</th>
+                <th>Seller</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Confirmed At</th>
+                <th>Completed At</th>
+                <th>Time Taken</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for confirmation in completed_orders %}
+            <tr>
+                <td><a href="{% url 'order_detail' confirmation.order.id %}">{{ confirmation.order.id }}</a></td>
+                <td>{{ confirmation.order.user.username }}</td>
+                <td>{{ confirmation.order.seller }}</td>
+                <td>{{ confirmation.order.description|truncatechars:15 }}</td>
+                <td>{{ confirmation.order.created }}</td>
+                <td>{{ confirmation.confirmed_at }}</td>
+                <td>{{ confirmation.completed_at }}</td>
+                <td>{{ confirmation.time_to_complete }}</td>
+                <td>{{ confirmation.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

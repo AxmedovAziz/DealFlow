@@ -1,8 +1,33 @@
-{% extends 'base.html'%}
-{% load static %}
+{% extends 'base.html' %}
+{% block title %} Orders {% endblock %}
 
-{% block title %} Home Page{% endblock%}
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Orders</h2>
 
-{% block content%}
-hello world
+    {% if orders %}
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ order.seller }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ order.user.username }}</h6>
+                    <p class="card-text">
+                        {{ order.description|truncatechars:15 }}<br>
+                        <small class="text-muted">{{ order.orders.count }} items</small><br>
+                        <small class="text-muted">{{ order.created|date:"Y-m-d H:i" }}</small>
+                    </p>
+                    <a href="{% url 'order_detail' order.pk %}" class="btn btn-primary btn-sm">View Order</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center" role="alert">
+        No orders available.
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

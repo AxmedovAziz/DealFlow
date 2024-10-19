@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
     "main",
+    "order_confirmations",
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"

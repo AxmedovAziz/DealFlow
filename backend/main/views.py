@@ -7,8 +7,19 @@ from django.forms import modelformset_factory
 from django.contrib.auth.decorators import login_required
 
 
+from django.shortcuts import render, get_object_or_404
+
+
 def home(request):
-    return render(request, "home.html")
+    orders = Order.objects.all()
+    context = {"orders": orders}
+    return render(request, "home.html", context)
+
+
+def order_detail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    context = {"order": order}
+    return render(request, "order_detail.html", context)
 
 
 @login_required(login_url="/accounts/login")
