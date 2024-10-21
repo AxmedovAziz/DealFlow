@@ -4,10 +4,11 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% load socialaccount %}
+
 {% block title %}Sign Out{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container m-5 w-50 mx-auto p-4 bg-light shadow-sm border rounded">
     <h1 class="text-center mb-4">{% trans "Sign Out" %}</h1>
 
     <p class="text-center">
@@ -15,16 +16,22 @@
     </p>
 
     {% url 'account_logout' as action_url %}
+
+    <!-- Logout form styled with Bootstrap -->
     <form method="post" action="{{ action_url }}" class="w-50 mx-auto">
         {% csrf_token %}
         {{ redirect_field }}
-
         <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn" style="background-color: #ffcc00; color: #000;">
+            <button type="submit" class="btn btn-danger">
                 {% trans "Sign Out" %}
             </button>
         </div>
     </form>
+    <div class="text-center mt-3">
+        <a href="{% url 'account_login' %}" class="btn btn-outline-secondary">
+            {% trans "Cancel" %}
+        </a>
+    </div>
 </div>
 
-{% endblock content %}
+{% endblock %}

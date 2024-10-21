@@ -11,92 +11,35 @@
 <div class="container mt-5">
     <h1 class="text-center mb-4">{% trans "Sign Up" %}</h1>
 
-    {% if not SOCIALACCOUNT_ONLY %}
-    <p class="text-center">
-        {% blocktranslate %}
-        Already have an account? Please <a href="{{ login_url }}">sign in</a>.
-        {% endblocktranslate %}
-    </p>
-
-    {% url 'account_signup' as action_url %}
-
-    <!-- Sign Up form with Bootstrap styling -->
-    <form method="post" action="{{ action_url }}" class="w-50 mx-auto needs-validation" novalidate>
+    <form method="post" action="{% url 'account_signup' %}" class="w-50 mx-auto needs-validation" novalidate
+        enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form|crispy }}
-        {{ redirect_field }}
+        {{ form.username|as_crispy_field }}
+        {{ form.email|as_crispy_field }}
+        {{ form.password1|as_crispy_field }}
+        {{ form.password2|as_crispy_field }}
 
-        <!-- Sign Up Button -->
         <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">
-                {% trans "Sign Up" %}
-            </button>
+            <button type="submit" class="btn btn-primary">{% trans "Sign Up" %}</button>
         </div>
     </form>
-    {% endif %}
 
-    <!-- Divider and Social Login Options -->
+    <p class="text-center mt-4">
+        {% trans "Already have an account?" %}
+        <a href="{% url 'account_login' %}">{% trans "Login" %}</a>
+    </p>
+
     <hr class="my-4">
     <div class="text-center">
-        <h5 class="mb-3">{% trans "Or Sign Up With" %}</h5>
-
-        <!-- Social login buttons styled using Bootstrap -->
+        <h5>{% trans "Or Sign Up With" %}</h5>
         <div class="social-login d-flex justify-content-center gap-2">
-            <a href="{% url 'google_login' %}" class="btn btn-outline-primary d-flex align-items-center">
-                <img src="{% static 'images/icons/google.png' %}" width="20" height="20" class="me-2">
-                Google
+            <a href="{% provider_login_url 'google' %}" class="btn btn-outline-primary d-flex align-items-center">
+                <img src="{% static 'images/icons/google.png' %}" width="20" height="20" class="me-2">Google
             </a>
-
             <a href="{% provider_login_url 'github' %}" class="btn btn-outline-dark d-flex align-items-center">
-                <img src="{% static 'images/icons/github.png' %}" width="20" height="20" class="me-2">
-                GitHub
+                <img src="{% static 'images/icons/github.png' %}" width="20" height="20" class="me-2">GitHub
             </a>
         </div>
     </div>
-
-    {% if PASSKEY_SIGNUP_ENABLED %}
-    <div class="mt-4 text-center">
-        <a href="{{ signup_by_passkey_url }}" class="btn btn-outline-primary">
-            {% trans "Sign up using a passkey" %}
-        </a>
-    </div>
-    {% endif %}
-
-    {% if SOCIALACCOUNT_ENABLED %}
-    <div class="w-50 mx-auto">
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-    </div>
-    {% endif %}
 </div>
-<script>
-    // Show/hide password functionality
-    document.getElementById('showPassword').addEventListener('change', function () {
-        const passwordField = document.getElementById('id_password');
-        if (passwordField) {
-            passwordField.type = this.checked ? 'text' : 'password';
-        }
-    });
-
-    // JavaScript to filter specific password validation messages
-    function filterErrorMessages() {
-        const errorMessages = document.querySelectorAll('.invalid-feedback');
-        errorMessages.forEach(function (errorMessage) {
-            const messageText = errorMessage.textContent.trim();
-            if (
-                messageText === "Your password can’t be too similar to your other personal information." ||
-                messageText === "Your password must contain at least 8 characters." ||
-                messageText === "Your password can’t be a commonly used password." ||
-                messageText === "Your password can’t be entirely numeric."
-            ) {
-                errorMessage.style.display = 'none';  // Hide unwanted messages
-            }
-        });
-    }
-
-    // Run the function after the page loads
-    window.onload = function () {
-        filterErrorMessages();
-    }
-</script>
-
 {% endblock content %}

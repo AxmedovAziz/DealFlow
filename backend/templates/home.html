@@ -11,7 +11,11 @@
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">{{ order.seller }}</h5>
+                    <h5 class="card-title">
+                        <a href="{% url 'get_orders_by_username' order.seller %}"
+                            class="text-decoration-none">Profile</a>
+                        {{ order.seller }}
+                    </h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{ order.user.username }}</h6>
                     <p class="card-text">
                         {{ order.description|truncatechars:15 }}<br>

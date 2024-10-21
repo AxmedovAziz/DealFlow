@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-lg p-3">
+        <h2 class="text-center mb-4">Your Profile</h2>
+
+        <form method="post" enctype="multipart/form-data" class="mx-auto" style="max-width: 500px;">
+            {% csrf_token %}
+
+            <!-- Profile Image Section -->
+            <div class="text-center mb-4">
+                <div class="position-relative">
+                    <label for="id_image">
+                        <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% else %}{% static 'default-profile.png' %}{% endif %}"
+                            id="profileImagePreview" alt="Profile Image" class="rounded-circle shadow-sm mb-3 img-fluid"
+                            style="width: 150px; height: 150px; cursor: pointer; object-fit: cover;">
+                    </label>
+                </div>
+
+                <input type="file" name="image" id="id_image" class="d-none" accept="image/*">
+                <p class="text-muted">Click the image to change your profile picture</p>
+            </div>
+
+            <div class="mb-3">
+                <label for="id_name" class="form-label">Full Name</label>
+                <input type="text" name="name" id="id_name" class="form-control"
+                    value="{{ form.name.value|default:'' }}" required>
+            </div>
+
+            <!-- Bio Field -->
+            <div class="mb-3">
+                <label for="id_bio" class="form-label">Bio</label>
+                <textarea name="bio" id="id_bio" class="form-control"
+                    rows="4">{{ form.bio.value|default:'' }}</textarea>
+            </div>
+
+            <!-- Phone Number Field -->
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number"
+                    value="{{ form.instance.phone }}">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Include external styles and scripts -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+<script>
+    // Initialize phone input
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            fetch('https://ipinfo.io/json?token=<YOUR_TOKEN>')
+                .then(response => response.json())
+                .then(data => callback(data.country))
+                .catch(() => callback('US'));
+        },
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    // Image input and preview logic
+    const imageInput = document.getElementById('id_image');
+    const profileImagePreview = document.getElementById('profileImagePreview');
+    const clearImageCheckbox = document.getElementById('id_image-clear');
+
+    // When the image is changed, preview it
+    imageInput.addEventListener('change', function () {
+        const file = imageInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                profileImagePreview.src = e.target.result;
+                removeImageBtn.classList.remove('d-none');
+                clearImageCheckbox.checked = false;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,13 +1,20 @@
 from django import forms
 from .models import Order, OrderItem
+from django.contrib.auth.models import User
 
 
 class OrderForm(forms.ModelForm):
+    seller = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        label="Seller",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+
     class Meta:
         model = Order
         fields = ["seller", "description"]
         widgets = {
-            "seller": forms.TextInput(attrs={"class": "form-control"}),
+            # "seller": forms.TextInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control"}),
         }
 

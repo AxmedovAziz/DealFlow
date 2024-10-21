@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
+
 {% block title %}Create Order{% endblock %}
+
 {% block content %}
 <div class="container my-5 p-4 bg-light shadow-sm border rounded">
     <h2 class="text-center mb-4">Create a New Order</h2>
@@ -10,7 +12,7 @@
         <!-- Seller and Description Fields -->
         <div class="mb-3">
             <label for="seller" class="form-label">{{ order_form.seller.label }}</label>
-            {{ order_form.seller }}
+            {{ order_form.seller }} <!-- This will render as a select dropdown -->
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">{{ order_form.description.label }}</label>

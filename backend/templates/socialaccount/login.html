@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock head_title %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="w-50 mx-auto p-4 bg-light shadow-sm border rounded">
+        {% if process == "connect" %}
+        <h1 class="text-center mb-4">{% trans "Connect" %} {{ provider.name }}</h1>
+        <p class="text-center">{% trans "You are about to connect a new third-party account from" %} {{ provider.name
+            }}.</p>
+        {% else %}
+        <h1 class="text-center mb-4">{% trans "Sign In Via" %} {{ provider.name }}</h1>
+        <p class="text-center">{% trans "You are about to sign in using a third-party account from" %} {{ provider.name
+            }}.</p>
+        {% endif %}
+
+        <!-- Form for submitting the third-party sign-in request -->
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+
+            <!-- Continue button with Bootstrap styling -->
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">{% trans "Continue" %}</button>
+            </div>
+        </form>
+
+        <!-- Cancel button to go back to the sign-in page -->
+        <div class="text-center mt-3">
+            <a href="{% url 'account_login' %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
